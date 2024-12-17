@@ -13,9 +13,14 @@ class LoginController {
     val logger: Logger = LoggerFactory.getLogger(this.javaClass)
 
     @RequestMapping("login")
-    fun goToLoginPage(@RequestParam name: String, model: ModelMap): String {
-        model["name"] = name
-        logger.debug("Request param: $name")
+    fun goToLoginPage(): String {
         return "login"
     }
+
+//    @RequestMapping("login")
+//    fun goToLoginPage(@RequestParam name: String, model: ModelMap): String {
+//        model["name"] = name
+//        logger.debug("Request param: $name")
+//        return "login"
+//    }
 }
