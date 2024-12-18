@@ -4,7 +4,6 @@ import jakarta.validation.Valid
 import org.springframework.stereotype.Controller
 import org.springframework.ui.ModelMap
 import org.springframework.validation.BindingResult
-import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.RequestParam
@@ -49,6 +48,26 @@ class TodoController(
     @RequestMapping("delete-todo")
     fun deleteTodo(@RequestParam id:Int): String{
         todoService.deleteById(id)
+        return "redirect:list-todos"
+    }
+
+    @RequestMapping(value = ["update-todo"], method = [RequestMethod.GET])
+    fun showUpdateTodoPage(@RequestParam id: Int, model: ModelMap): String {
+        todoService.findById(id)?.let { todo ->
+            model.addAttribute("todo", todo)
+        }
+
+        return "todo"
+    }
+
+    @RequestMapping(value = ["update-todo"], method = [RequestMethod.POST])
+    fun updateTodo(model: ModelMap, todo: @Valid Todo, result: BindingResult): String {
+        if (result.hasErrors()) {
+            return "todo"
+        }
+
+        todo.username = model["name"].toString()
+        todoService.update(todo)
         return "redirect:list-todos"
     }
 }

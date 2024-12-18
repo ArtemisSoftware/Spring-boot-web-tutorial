@@ -18,6 +18,14 @@ class TodoService {
         TODOS.removeIf { it.id == id }
     }
 
+    fun findById(id: Int): Todo? {
+        return TODOS.find { it.id == id }
+    }
+
+    fun update(todo: Todo) {
+        TODOS.find { it.id == todo.id }?.description = todo.description
+    }
+
     private companion object {
         var TODOS = mutableListOf(
             Todo(1, "Milo", "The first one", LocalDate.now().plusYears(1), false),
