@@ -31,15 +31,13 @@ class TodoController(
 
     @RequestMapping(value = ["add-todo"], method = [RequestMethod.POST])
     fun addNewTodo(model: ModelMap, @Valid todo: Todo, result: BindingResult): String{
-        println("result = ${result.model.toString()}  ")
-        println("result = ${result.hasErrors()}  ")
         if(result.hasErrors()){
             return "todo"
         }
         todoService.addTodo(
             username = model["name"].toString(),
             description = todo.description,
-            LocalDate.now().plusYears(1),
+            todo.targetDate,
             false
         )
         return "redirect:list-todos"
