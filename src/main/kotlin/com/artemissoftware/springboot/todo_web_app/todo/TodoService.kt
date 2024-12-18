@@ -14,6 +14,10 @@ class TodoService {
         TODOS.add(todo)
     }
 
+    fun deleteById(id: Int){
+        TODOS.removeIf { it.id == id }
+    }
+
     private companion object {
         var TODOS = mutableListOf(
             Todo(1, "Milo", "The first one", LocalDate.now().plusYears(1), false),

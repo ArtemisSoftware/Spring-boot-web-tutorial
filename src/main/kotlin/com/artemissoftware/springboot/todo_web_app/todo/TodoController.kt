@@ -7,6 +7,7 @@ import org.springframework.validation.BindingResult
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.SessionAttributes
 import java.time.LocalDate
 
@@ -42,6 +43,12 @@ class TodoController(
             LocalDate.now().plusYears(1),
             false
         )
+        return "redirect:list-todos"
+    }
+
+    @RequestMapping("delete-todo")
+    fun deleteTodo(@RequestParam id:Int): String{
+        todoService.deleteById(id)
         return "redirect:list-todos"
     }
 }
