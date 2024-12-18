@@ -8,8 +8,14 @@ class TodoService {
 
     fun findByUsername(username: String) = TODOS
 
+    fun addTodo(username: String, description: String, localDate: LocalDate, done: Boolean){
+        val id = TODOS.last().id + 1
+        val todo = Todo(id, username, description, localDate, done)
+        TODOS.add(todo)
+    }
+
     private companion object {
-        val TODOS = listOf(
+        var TODOS = mutableListOf(
             Todo(1, "Milo", "The first one", LocalDate.now().plusYears(1), false),
             Todo(2, "Sorrento", "Poseidon", LocalDate.now().plusYears(2), false),
             Todo(3, "Yoga", "Bronze Saint", LocalDate.now().plusYears(3), false)

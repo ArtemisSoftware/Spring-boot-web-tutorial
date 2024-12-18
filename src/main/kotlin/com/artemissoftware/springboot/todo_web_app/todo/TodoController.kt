@@ -4,7 +4,9 @@ import org.springframework.stereotype.Controller
 import org.springframework.ui.ModelMap
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.SessionAttributes
+import java.time.LocalDate
 
 @Controller
 @SessionAttributes("name")
@@ -24,7 +26,13 @@ class TodoController(
     }
 
     @RequestMapping(value = ["add-todo"], method = [RequestMethod.POST])
-    fun addNewTodo(): String{
+    fun addNewTodo(@RequestParam description: String, model: ModelMap): String{
+        todoService.addTodo(
+            username = model.get("name").toString(),
+            description = description,
+            LocalDate.now().plusYears(1),
+            false
+        )
         return "redirect:list-todos"
     }
 }
