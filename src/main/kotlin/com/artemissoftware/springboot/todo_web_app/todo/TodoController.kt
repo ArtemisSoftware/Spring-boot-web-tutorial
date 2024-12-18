@@ -1,7 +1,10 @@
 package com.artemissoftware.springboot.todo_web_app.todo
 
+import jakarta.validation.Valid
 import org.springframework.stereotype.Controller
 import org.springframework.ui.ModelMap
+import org.springframework.validation.BindingResult
+import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestMethod
 import org.springframework.web.bind.annotation.SessionAttributes
@@ -27,10 +30,15 @@ class TodoController(
     }
 
     @RequestMapping(value = ["add-todo"], method = [RequestMethod.POST])
-    fun addNewTodo(model: ModelMap, todo: Todo?= null): String{
+    fun addNewTodo(model: ModelMap, @Valid todo: Todo, result: BindingResult): String{
+        println("result = ${result.model.toString()}  ")
+        println("result = ${result.hasErrors()}  ")
+        if(result.hasErrors()){
+            return "todo"
+        }
         todoService.addTodo(
             username = model["name"].toString(),
-            description = todo?.description ?: "",
+            description = todo.description,
             LocalDate.now().plusYears(1),
             false
         )

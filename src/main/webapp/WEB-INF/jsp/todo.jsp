@@ -11,6 +11,7 @@
 			<h1>Enter Todo Details</h1>
 			<form:form method="post" modelAttribute="todo">
 				Description: <form:input type="text" required="required" path="description"/>
+				<form:errors path="description"/>
 				<form:input type="hidden" path="id"/>
                 <form:input type="hidden" path="done"/>
 				<input type="submit" class="btn btn-success"/>
