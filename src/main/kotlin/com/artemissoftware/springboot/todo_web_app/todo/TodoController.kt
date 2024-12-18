@@ -1,6 +1,7 @@
 package com.artemissoftware.springboot.todo_web_app.todo
 
 import jakarta.validation.Valid
+import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.stereotype.Controller
 import org.springframework.ui.ModelMap
 import org.springframework.validation.BindingResult
@@ -18,13 +19,13 @@ class TodoController(
 
     @RequestMapping("list-todos")
     fun listAllTodos(model: ModelMap): String{
-        model.addAttribute("todos", todoService.findByUsername("Yoga"))
+        model.addAttribute("todos", todoService.findByUsername(getLoggedinUsername()))
         return "listTodos"
     }
 
     @RequestMapping(value = ["add-todo"], method = [RequestMethod.GET])
     fun showNewTodoPage(model: ModelMap): String{
-        val todo = Todo(10, model["name"].toString(), "", LocalDate.now().plusYears(1), false)
+        val todo = Todo(10, getLoggedinUsername(), "", LocalDate.now().plusYears(1), false)
         model["todo"] = todo
         return "todo"
     }
@@ -35,7 +36,7 @@ class TodoController(
             return "todo"
         }
         todoService.addTodo(
-            username = model["name"].toString(),
+            username = getLoggedinUsername(),
             description = todo.description,
             todo.targetDate,
             false
@@ -64,8 +65,13 @@ class TodoController(
             return "todo"
         }
 
-        todo.username = model["name"].toString()
+        todo.username = getLoggedinUsername()
         todoService.update(todo)
         return "redirect:list-todos"
+    }
+
+    private fun getLoggedinUsername(): String {
+        val authentication = SecurityContextHolder.getContext().authentication
+        return authentication.name
     }
 }
