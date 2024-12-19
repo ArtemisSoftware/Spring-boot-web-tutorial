@@ -11,15 +11,18 @@ import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.SessionAttributes
 import java.time.LocalDate
 
-//@Controller
+@Controller
 @SessionAttributes("name")
-class TodoController(
-    private val todoService: TodoService
+class TodoControllerJpa(
+    private val todoService: TodoService,
+    private val todoRepository: TodoRepository
 ) {
 
     @RequestMapping("list-todos")
     fun listAllTodos(model: ModelMap): String{
-        model.addAttribute("todos", todoService.findByUsername(getLoggedinUsername()))
+        println("User: " + getLoggedinUsername())
+        println("list: " + todoRepository.findByUsername(getLoggedinUsername()))
+        model.addAttribute("todos", todoRepository.findByUsername(getLoggedinUsername()))
         return "listTodos"
     }
 
