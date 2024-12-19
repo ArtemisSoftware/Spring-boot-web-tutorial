@@ -14,21 +14,20 @@ import java.time.LocalDate
 @Controller
 @SessionAttributes("name")
 class TodoControllerJpa(
-    private val todoService: TodoService,
     private val todoRepository: TodoRepository
 ) {
 
     @RequestMapping("list-todos")
     fun listAllTodos(model: ModelMap): String{
-        println("User: " + getLoggedinUsername())
-        println("list: " + todoRepository.findByUsername(getLoggedinUsername()))
-        model.addAttribute("todos", todoRepository.findByUsername(getLoggedinUsername()))
+        println("User: " + getLoggedUsername())
+        println("list: " + todoRepository.findByUsername(getLoggedUsername()))
+        model.addAttribute("todos", todoRepository.findByUsername(getLoggedUsername()))
         return "listTodos"
     }
 
     @RequestMapping(value = ["add-todo"], method = [RequestMethod.GET])
     fun showNewTodoPage(model: ModelMap): String{
-        val todo = Todo(10, getLoggedinUsername(), "", LocalDate.now().plusYears(1), false)
+        val todo = Todo(10, getLoggedUsername(), "", LocalDate.now().plusYears(1), false)
         model["todo"] = todo
         return "todo"
     }
@@ -38,24 +37,21 @@ class TodoControllerJpa(
         if(result.hasErrors()){
             return "todo"
         }
-        todoService.addTodo(
-            username = getLoggedinUsername(),
-            description = todo.description,
-            todo.targetDate,
-            false
-        )
+        todo.username = getLoggedUsername()
+        todoRepository.save(todo)
+
         return "redirect:list-todos"
     }
 
     @RequestMapping("delete-todo")
     fun deleteTodo(@RequestParam id:Int): String{
-        todoService.deleteById(id)
+        todoRepository.deleteById(id)
         return "redirect:list-todos"
     }
 
     @RequestMapping(value = ["update-todo"], method = [RequestMethod.GET])
     fun showUpdateTodoPage(@RequestParam id: Int, model: ModelMap): String {
-        todoService.findById(id)?.let { todo ->
+        todoRepository.findById(id).get().let { todo ->
             model.addAttribute("todo", todo)
         }
 
@@ -68,12 +64,12 @@ class TodoControllerJpa(
             return "todo"
         }
 
-        todo.username = getLoggedinUsername()
-        todoService.update(todo)
+        todo.username = getLoggedUsername()
+        todoRepository.save(todo)
         return "redirect:list-todos"
     }
 
-    private fun getLoggedinUsername(): String {
+    private fun getLoggedUsername(): String {
         val authentication = SecurityContextHolder.getContext().authentication
         return authentication.name
     }
