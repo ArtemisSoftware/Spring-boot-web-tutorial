@@ -19,8 +19,6 @@ class TodoControllerJpa(
 
     @RequestMapping("list-todos")
     fun listAllTodos(model: ModelMap): String{
-        println("User: " + getLoggedUsername())
-        println("list: " + todoRepository.findByUsername(getLoggedUsername()))
         model.addAttribute("todos", todoRepository.findByUsername(getLoggedUsername()))
         return "listTodos"
     }
